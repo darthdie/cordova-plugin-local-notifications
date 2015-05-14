@@ -182,6 +182,13 @@ public class Options {
     }
 
     /**
+     * onlyAlertOnce flag for local notifications.
+     */
+    public Boolean isOnlyAlertOnce() {
+        return options.optBoolean("alertOnlyOnce", false);
+    }
+	
+    /**
      * Trigger date in milliseconds.
      */
     public long getTriggerTime() {
