@@ -132,7 +132,6 @@ public class Builder {
                 .setLargeIcon(options.getIconBitmap())
                 .setAutoCancel(options.isAutoClear())
                 .setOngoing(options.isOngoing())
-				.setOnlyAlertOnce(options.isOnlyAlertOnce())
                 .setStyle(style)
                 .setLights(options.getLedColor(), 500, 500);
 
