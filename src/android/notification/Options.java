@@ -180,6 +180,13 @@ public class Options {
     public Boolean isOngoing() {
         return options.optBoolean("ongoing", false);
     }
+	
+	/**
+     * alertOnlyOnce flag for local notifications.
+     */
+	public boolean isOnlyAlertOnce() {
+		return options.optBoolean("alertOnlyOnce", false);
+	}
 
     /**
      * autoClear flag for local notifications.
