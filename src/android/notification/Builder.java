@@ -135,6 +135,12 @@ public class Builder {
                 .setStyle(style)
                 .setLights(options.getLedColor(), 500, 500);
 
+        String type = options.getType();
+
+        if(type.equals("download")) {
+            builder.setProgress(100, 0, false);
+        }
+
         if (sound != null) {
             builder.setSound(sound);
         }

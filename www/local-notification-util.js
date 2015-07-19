@@ -33,6 +33,7 @@ var exec    = require('cordova/exec'),
 exports._defaults = {
     text:  '',
     title: '',
+    type: '',
     sound: 'res://platform_default',
     badge: 0,
     id:    0,

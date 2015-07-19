@@ -160,6 +160,10 @@ public class Options {
         return options.optString("text", "");
     }
 
+    public String getType() {
+        return options.optString("type", "");
+    }
+
     /**
      * Repeat interval (day, week, month, year, aso.)
      */
