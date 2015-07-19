@@ -112,19 +112,26 @@ public class Manager {
     public Notification update (int id, JSONObject updates, Class<?> receiver) {
         Notification notification = get(id);
 
-        if (notification == null)
+        if (notification == null) {
             return null;
+        }
 
-        notification.cancel();
+        //notification.cancel();
 
-        JSONObject options = mergeJSONObjects(
-                notification.getOptions().getDict(), updates);
+        JSONObject options = mergeJSONObjects(notification.getOptions().getDict(), updates);
 
         try {
             options.putOpt("updatedAt", new Date().getTime());
         } catch (JSONException ignore) {}
 
-        return schedule(options, receiver);
+        notification = new Builder(options)
+                .setTriggerReceiver(receiver)
+                .build();
+
+        notification.schedule();
+        return notification;
+
+        //return schedule(options, receiver);
     }
 
     /**
