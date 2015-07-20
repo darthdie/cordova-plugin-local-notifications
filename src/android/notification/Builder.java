@@ -111,6 +111,45 @@ public class Builder {
         return this;
     }
 
+    public static Notification update(Options options, Notification notification) {
+        Uri sound = options.getSoundUri();
+        NotificationCompat.BigTextStyle style;
+
+        style = new NotificationCompat.BigTextStyle()
+                .bigText(options.getText());
+
+                NotificationCompat.Builder builder = notification.getBuilder();
+
+        builder
+            .setDefaults(0)
+            .setContentTitle(options.getTitle())
+            .setContentText(options.getText())
+            .setNumber(options.getBadgeNumber())
+            .setTicker(options.getText())
+            .setSmallIcon(options.getSmallIcon())
+            .setLargeIcon(options.getIconBitmap())
+            .setAutoCancel(options.isAutoClear())
+            .setOngoing(options.isOngoing())
+            .setOnlyAlertOnce(options.isAlertOnlyOnce())
+            .setStyle(style)
+            .setLights(options.getLedColor(), 500, 500);
+
+        String type = options.getType();
+
+        if(type.equals("download")) {
+            builder.setProgress(100, options.getProgress(), false);
+        }
+
+        if (sound != null) {
+            builder.setSound(sound);
+        }
+
+        //applyDeleteReceiver(builder);
+        //applyContentReceiver(builder);
+
+        return new Notification(notification.getContext(), options, builder, notification.getReceiver());
+    }
+
     /**
      * Creates the notification with all its options passed through JS.
      */
@@ -132,13 +171,14 @@ public class Builder {
                 .setLargeIcon(options.getIconBitmap())
                 .setAutoCancel(options.isAutoClear())
                 .setOngoing(options.isOngoing())
+                .setOnlyAlertOnce(options.isAlertOnlyOnce())
                 .setStyle(style)
                 .setLights(options.getLedColor(), 500, 500);
 
         String type = options.getType();
 
         if(type.equals("download")) {
-            builder.setProgress(100, 0, false);
+            builder.setProgress(100, options.getProgress(), false);
         }
 
         if (sound != null) {

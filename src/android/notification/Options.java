@@ -164,6 +164,10 @@ public class Options {
         return options.optString("type", "");
     }
 
+    public int getProgress() {
+        return options.optInt("progress", 0);
+    }
+
     /**
      * Repeat interval (day, week, month, year, aso.)
      */
@@ -183,6 +187,10 @@ public class Options {
      */
     public Boolean isOngoing() {
         return options.optBoolean("ongoing", false);
+    }
+
+    public Boolean isAlertOnlyOnce() {
+        return options.optBoolean("alertOnlyOnce", false);
     }
 
     /**

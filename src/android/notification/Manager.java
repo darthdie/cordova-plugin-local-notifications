@@ -116,22 +116,22 @@ public class Manager {
             return null;
         }
 
-        //notification.cancel();
-
         JSONObject options = mergeJSONObjects(notification.getOptions().getDict(), updates);
 
         try {
             options.putOpt("updatedAt", new Date().getTime());
         } catch (JSONException ignore) {}
 
-        notification = new Builder(options)
-                .setTriggerReceiver(receiver)
-                .build();
+        if(notification.getOptions().getType().equals("download")) {
+            notification = Builder.update(new Options(context).parse(options), notification);
 
-        notification.schedule();
-        return notification;
+            notification.schedule();
+            return notification;
+        }
 
-        //return schedule(options, receiver);
+        notification.cancel();
+
+        return schedule(options, receiver);
     }
 
     /**

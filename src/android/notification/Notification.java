@@ -94,6 +94,14 @@ public class Notification {
         return context;
     }
 
+    public NotificationCompat.Builder getBuilder() {
+        return builder;
+    }
+
+    public Class<?> getReceiver() {
+        return receiver;
+    }
+
     /**
      * Get notification options.
      */
