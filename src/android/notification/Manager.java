@@ -122,7 +122,9 @@ public class Manager {
             options.putOpt("updatedAt", new Date().getTime());
         } catch (JSONException ignore) {}
 
-        if(notification.getOptions().getType().equals("download")) {
+        String type = notification.getOptions().getType();
+
+        if(type.equals("download") || type.equals("media")) {
             notification = Builder.update(new Options(context).parse(options), notification);
 
             notification.schedule();

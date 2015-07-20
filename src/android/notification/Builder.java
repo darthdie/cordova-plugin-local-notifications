@@ -28,6 +28,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.media.session.MediaSessionCompat;
+import android.support.v4.media.session.PlaybackStateCompat;
+import android.support.v4.media.session.MediaSessionCompat.Callback;
+
+import android.R;
 
 import org.json.JSONObject;
 
@@ -38,6 +43,14 @@ import java.util.Random;
  * notification specified by JSON object passed from JS side.
  */
 public class Builder {
+
+    public static final String ACTION_PLAY = "action_play";
+    public static final String ACTION_PAUSE = "action_pause";
+    public static final String ACTION_REWIND = "action_rewind";
+    public static final String ACTION_FAST_FORWARD = "action_fast_foward";
+    public static final String ACTION_NEXT = "action_next";
+    public static final String ACTION_PREVIOUS = "action_previous";
+    public static final String ACTION_STOP = "action_stop";
 
     // Application context passed by constructor
     private final Context context;
@@ -53,6 +66,8 @@ public class Builder {
 
     // Activity to handle the click event
     private Class<?> clickActivity = ClickActivity.class;
+
+    private MediaSessionCompat mSession;
 
     /**
      * Constructor
@@ -118,7 +133,7 @@ public class Builder {
         style = new NotificationCompat.BigTextStyle()
                 .bigText(options.getText());
 
-                NotificationCompat.Builder builder = notification.getBuilder();
+        NotificationCompat.Builder builder = notification.getBuilder();
 
         builder
             .setDefaults(0)
@@ -155,13 +170,8 @@ public class Builder {
      */
     public Notification build() {
         Uri sound = options.getSoundUri();
-        NotificationCompat.BigTextStyle style;
-        NotificationCompat.Builder builder;
 
-        style = new NotificationCompat.BigTextStyle()
-                .bigText(options.getText());
-
-        builder = new NotificationCompat.Builder(context)
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
                 .setDefaults(0)
                 .setContentTitle(options.getTitle())
                 .setContentText(options.getText())
@@ -172,13 +182,43 @@ public class Builder {
                 .setAutoCancel(options.isAutoClear())
                 .setOngoing(options.isOngoing())
                 .setOnlyAlertOnce(options.isAlertOnlyOnce())
-                .setStyle(style)
                 .setLights(options.getLedColor(), 500, 500);
 
         String type = options.getType();
 
         if(type.equals("download")) {
             builder.setProgress(100, options.getProgress(), false);
+            builder.setTicker(null);
+        }
+        else if(type.equals("media")) {
+            /*PlaybackStateCompat.Builder stateBuilder = new PlaybackStateCompat.Builder();
+            stateBuilder.setActions(PlaybackStateCompat.ACTION_PLAY);
+            stateBuilder.setState(PlaybackStateCompat.STATE_STOPPED, PlaybackStateCompat.PLAYBACK_POSITION_UNKNOWN, 0);
+
+            mSession = new MediaSessionCompat(context, "test");
+            mSession.setPlaybackState(stateBuilder.build());
+            mSession.setFlags(MediaSessionCompat.FLAG_HANDLES_MEDIA_BUTTONS | MediaSessionCompat.FLAG_HANDLES_TRANSPORT_CONTROLS);
+
+            mSession.setActive(true);
+
+            style.setMediaSession(mSession.getSessionToken());*/
+
+            builder.addAction(generateAction(android.R.drawable.ic_media_previous, "Previous", ACTION_PREVIOUS));
+            builder.addAction(generateAction(android.R.drawable.ic_media_rew, "Rewind", ACTION_REWIND));
+            builder.addAction(generateAction(android.R.drawable.ic_media_play, "Play", ACTION_PLAY));
+            builder.addAction(generateAction(android.R.drawable.ic_media_ff, "Fast Foward", ACTION_FAST_FORWARD));
+            builder.addAction(generateAction(android.R.drawable.ic_media_next, "Next", ACTION_NEXT));
+
+            android.support.v7.app.NotificationCompat.MediaStyle style = new android.support.v7.app.NotificationCompat.MediaStyle();
+            style.setShowActionsInCompactView(2);
+
+            builder.setStyle(style);
+            builder.setShowWhen(false);
+            builder.setVisibility(NotificationCompat.VISIBILITY_PUBLIC);
+        }
+        else {
+            NotificationCompat.BigTextStyle style = new NotificationCompat.BigTextStyle().bigText(options.getText());
+            builder.setStyle(style);
         }
 
         if (sound != null) {
@@ -189,6 +229,13 @@ public class Builder {
         applyContentReceiver(builder);
 
         return new Notification(context, options, builder, triggerReceiver);
+    }
+
+    private NotificationCompat.Action generateAction( int icon, String title, String intentAction ) {
+        Intent intent = new Intent(context, clickActivity);
+        intent.setAction(intentAction);
+        PendingIntent pendingIntent = PendingIntent.getService(context, 1, intent, 0);
+        return new NotificationCompat.Action.Builder(icon, title, pendingIntent).build();
     }
 
     /**
