@@ -69,6 +69,8 @@ public class Builder {
 
     private MediaSessionCompat mSession;
 
+    private CallbackContext command;
+
     /**
      * Constructor
      *
@@ -88,9 +90,10 @@ public class Builder {
      * @param options
      *      Notification options
      */
-    public Builder(Options options) {
+    public Builder(Options options, CallbackContext command) {
         this.context = options.getContext();
         this.options = options;
+        this.command = command;
     }
 
     /**
@@ -146,13 +149,16 @@ public class Builder {
             .setAutoCancel(options.isAutoClear())
             .setOngoing(options.isOngoing())
             .setOnlyAlertOnce(options.isAlertOnlyOnce())
-            .setStyle(style)
-            .setLights(options.getLedColor(), 500, 500);
+            .setStyle(style);
+            
 
         String type = options.getType();
 
         if(type.equals("download")) {
             builder.setProgress(100, options.getProgress(), false);
+        }
+        else {
+            builder.setLights(options.getLedColor(), 500, 500);
         }
 
         if (sound != null) {
@@ -181,14 +187,14 @@ public class Builder {
                 .setLargeIcon(options.getIconBitmap())
                 .setAutoCancel(options.isAutoClear())
                 .setOngoing(options.isOngoing())
-                .setOnlyAlertOnce(options.isAlertOnlyOnce())
-                .setLights(options.getLedColor(), 500, 500);
+                .setOnlyAlertOnce(options.isAlertOnlyOnce());
 
         String type = options.getType();
 
         if(type.equals("download")) {
-            builder.setProgress(100, options.getProgress(), false);
-            builder.setTicker(null);
+            builder
+                .setProgress(100, options.getProgress(), false)
+                .setTicker(null);
         }
         else if(type.equals("media")) {
             /*PlaybackStateCompat.Builder stateBuilder = new PlaybackStateCompat.Builder();
@@ -203,22 +209,24 @@ public class Builder {
 
             style.setMediaSession(mSession.getSessionToken());*/
 
-            builder.addAction(generateAction(android.R.drawable.ic_media_previous, "Previous", ACTION_PREVIOUS));
-            builder.addAction(generateAction(android.R.drawable.ic_media_rew, "Rewind", ACTION_REWIND));
-            builder.addAction(generateAction(android.R.drawable.ic_media_play, "Play", ACTION_PLAY));
-            builder.addAction(generateAction(android.R.drawable.ic_media_ff, "Fast Foward", ACTION_FAST_FORWARD));
-            builder.addAction(generateAction(android.R.drawable.ic_media_next, "Next", ACTION_NEXT));
+            //builder.addAction(generateAction(android.R.drawable.ic_media_previous, "Previous", ACTION_PREVIOUS));
+            //builder.addAction(generateAction(android.R.drawable.ic_media_next, "Next", ACTION_NEXT));
 
-            android.support.v7.app.NotificationCompat.MediaStyle style = new android.support.v7.app.NotificationCompat.MediaStyle();
-            style.setShowActionsInCompactView(2);
-
-            builder.setStyle(style);
-            builder.setShowWhen(false);
-            builder.setVisibility(NotificationCompat.VISIBILITY_PUBLIC);
+            builder
+                .addAction(generateAction(android.R.drawable.ic_media_rew, "Back", ACTION_REWIND))
+                .addAction(generateAction(android.R.drawable.ic_media_play, "Play", ACTION_PLAY))
+                .addAction(generateAction(android.R.drawable.ic_media_ff, "Foward", ACTION_FAST_FORWARD))
+                .setStyle(new android.support.v7.app.NotificationCompat.MediaStyle()
+                    .setShowActionsInCompactView(1))
+                .setShowWhen(false)
+                .setVisibility(NotificationCompat.VISIBILITY_PUBLIC);
         }
         else {
             NotificationCompat.BigTextStyle style = new NotificationCompat.BigTextStyle().bigText(options.getText());
-            builder.setStyle(style);
+
+            builder
+                .setStyle(style)
+                .setLights(options.getLedColor(), 500, 500);
         }
 
         if (sound != null) {

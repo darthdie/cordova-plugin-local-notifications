@@ -77,8 +77,8 @@ public class Manager {
      * @param receiver
      *      Receiver to handle the trigger event
      */
-    public Notification schedule (JSONObject options, Class<?> receiver) {
-        return schedule(new Options(context).parse(options), receiver);
+    public Notification schedule (JSONObject options, Class<?> receiver, final CallbackContext command) {
+        return schedule(new Options(context).parse(options), receiver, command);
     }
 
     /**
@@ -89,8 +89,8 @@ public class Manager {
      * @param receiver
      *      Receiver to handle the trigger event
      */
-    public Notification schedule (Options options, Class<?> receiver) {
-        Notification notification = new Builder(options)
+    public Notification schedule (Options options, Class<?> receiver, final CallbackContext command) {
+        Notification notification = new Builder(options, command)
                 .setTriggerReceiver(receiver)
                 .build();
 

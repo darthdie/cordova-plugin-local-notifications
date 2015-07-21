@@ -134,7 +134,7 @@ public class LocalNotification extends CordovaPlugin {
         cordova.getThreadPool().execute(new Runnable() {
             public void run() {
                 if (action.equals("schedule")) {
-                    schedule(args);
+                    schedule(args, command);
                     command.success();
                 }
                 else if (action.equals("update")) {
@@ -208,12 +208,12 @@ public class LocalNotification extends CordovaPlugin {
      * @param notifications
      *      Properties for each local notification
      */
-    private void schedule (JSONArray notifications) {
+    private void schedule (JSONArray notifications, final CallbackContext command) {
         for (int i = 0; i < notifications.length(); i++) {
             JSONObject options = notifications.optJSONObject(i);
 
             Notification notification =
-                    getNotificationMgr().schedule(options, TriggerReceiver.class);
+                    getNotificationMgr().schedule(options, TriggerReceiver.class, command);
 
             fireEvent("schedule", notification);
         }
