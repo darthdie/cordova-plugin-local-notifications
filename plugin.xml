@@ -109,6 +109,15 @@
                 android:exported="false" />
 
             <receiver
+                android:name="de.appplant.cordova.plugin.localnotification.MediaControlReceiver"
+                android:exported="false">
+                <intent-filter>
+                    <action android:name="de.appplant.action_play" />
+                    <action android:name="de.appplant.action_pause" />
+                </intent-filter>
+            </receiver>
+
+            <receiver
                 android:name="de.appplant.cordova.plugin.notification.ClearReceiver"
                 android:exported="false" />
 
@@ -149,6 +158,10 @@
 
         <source-file
             src="src/android/RestoreReceiver.java"
+            target-dir="src/de/appplant/cordova/plugin/localnotification" />
+
+        <source-file
+            src="src/android/MediaControlReceiver.java"
             target-dir="src/de/appplant/cordova/plugin/localnotification" />
 
         <source-file

@@ -243,6 +243,9 @@ exports.fireEvent = function (event) {
     var args     = Array.apply(null, arguments).slice(1),
         listener = this._listener[event];
 
+        console.log(event);
+        console.log(listener);
+
     if (!listener)
         return;
 

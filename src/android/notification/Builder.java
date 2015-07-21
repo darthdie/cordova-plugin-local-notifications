@@ -32,6 +32,8 @@ import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
 import android.support.v4.media.session.MediaSessionCompat.Callback;
 
+import de.appplant.cordova.plugin.localnotification.MediaControlReceiver;
+
 import android.R;
 
 import org.json.JSONObject;
@@ -44,13 +46,13 @@ import java.util.Random;
  */
 public class Builder {
 
-    public static final String ACTION_PLAY = "action_play";
-    public static final String ACTION_PAUSE = "action_pause";
-    public static final String ACTION_REWIND = "action_rewind";
-    public static final String ACTION_FAST_FORWARD = "action_fast_foward";
-    public static final String ACTION_NEXT = "action_next";
-    public static final String ACTION_PREVIOUS = "action_previous";
-    public static final String ACTION_STOP = "action_stop";
+    public static final String ACTION_PLAY = "de.appplant.action_play";
+    public static final String ACTION_PAUSE = "de.appplant.action_pause";
+    public static final String ACTION_REWIND = "de.appplant.action_rewind";
+    public static final String ACTION_FAST_FORWARD = "de.appplant.action_fast_foward";
+    public static final String ACTION_NEXT = "de.appplant.action_next";
+    public static final String ACTION_PREVIOUS = "de.appplant.action_previous";
+    public static final String ACTION_STOP = "de.appplant.action_stop";
 
     // Application context passed by constructor
     private final Context context;
@@ -181,14 +183,14 @@ public class Builder {
                 .setLargeIcon(options.getIconBitmap())
                 .setAutoCancel(options.isAutoClear())
                 .setOngoing(options.isOngoing())
-                .setOnlyAlertOnce(options.isAlertOnlyOnce())
-                .setLights(options.getLedColor(), 500, 500);
+                .setOnlyAlertOnce(options.isAlertOnlyOnce());
 
         String type = options.getType();
 
         if(type.equals("download")) {
-            builder.setProgress(100, options.getProgress(), false);
-            builder.setTicker(null);
+            builder
+                .setProgress(100, options.getProgress(), false)
+                .setTicker(null);
         }
         else if(type.equals("media")) {
             /*PlaybackStateCompat.Builder stateBuilder = new PlaybackStateCompat.Builder();
@@ -203,22 +205,20 @@ public class Builder {
 
             style.setMediaSession(mSession.getSessionToken());*/
 
-            builder.addAction(generateAction(android.R.drawable.ic_media_previous, "Previous", ACTION_PREVIOUS));
-            builder.addAction(generateAction(android.R.drawable.ic_media_rew, "Rewind", ACTION_REWIND));
-            builder.addAction(generateAction(android.R.drawable.ic_media_play, "Play", ACTION_PLAY));
-            builder.addAction(generateAction(android.R.drawable.ic_media_ff, "Fast Foward", ACTION_FAST_FORWARD));
-            builder.addAction(generateAction(android.R.drawable.ic_media_next, "Next", ACTION_NEXT));
-
-            android.support.v7.app.NotificationCompat.MediaStyle style = new android.support.v7.app.NotificationCompat.MediaStyle();
-            style.setShowActionsInCompactView(2);
-
-            builder.setStyle(style);
-            builder.setShowWhen(false);
-            builder.setVisibility(NotificationCompat.VISIBILITY_PUBLIC);
+            builder
+                .addAction(generateAction(android.R.drawable.ic_media_rew, "Rewind", ACTION_REWIND))
+                .addAction(generateAction(android.R.drawable.ic_media_play, "Play", ACTION_PLAY))
+                .addAction(generateAction(android.R.drawable.ic_media_ff, "Fast Foward", ACTION_FAST_FORWARD))
+                .setStyle(new android.support.v7.app.NotificationCompat.MediaStyle()
+                    .setShowActionsInCompactView(1))
+                .setShowWhen(false)
+                .setVisibility(NotificationCompat.VISIBILITY_PUBLIC);
         }
         else {
             NotificationCompat.BigTextStyle style = new NotificationCompat.BigTextStyle().bigText(options.getText());
-            builder.setStyle(style);
+            builder
+                .setStyle(style)
+                .setLights(options.getLedColor(), 500, 500);
         }
 
         if (sound != null) {
@@ -232,9 +232,14 @@ public class Builder {
     }
 
     private NotificationCompat.Action generateAction( int icon, String title, String intentAction ) {
-        Intent intent = new Intent(context, clickActivity);
+        Intent intent = new Intent(context, MediaControlReceiver.class);
         intent.setAction(intentAction);
-        PendingIntent pendingIntent = PendingIntent.getService(context, 1, intent, 0);
+        intent.putExtra(Options.EXTRA, options.toString());
+        //PendingIntent pendingIntent = PendingIntent.getService(context, 1, intent, 0);
+        // (Context context, int requestCode, Intent intent, int flags)
+        int requestCode = new Random().nextInt();
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, requestCode, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+
         return new NotificationCompat.Action.Builder(icon, title, pendingIntent).build();
     }
 
