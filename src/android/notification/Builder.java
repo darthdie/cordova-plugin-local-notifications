@@ -148,13 +148,16 @@ public class Builder {
             .setAutoCancel(options.isAutoClear())
             .setOngoing(options.isOngoing())
             .setOnlyAlertOnce(options.isAlertOnlyOnce())
-            .setStyle(style)
-            .setLights(options.getLedColor(), 500, 500);
+            .setStyle(style);
+
 
         String type = options.getType();
 
         if(type.equals("download")) {
             builder.setProgress(100, options.getProgress(), false);
+        }
+        else {
+            builder.setLights(options.getLedColor(), 500, 500);
         }
 
         if (sound != null) {
@@ -204,7 +207,6 @@ public class Builder {
             mSession.setActive(true);
 
             style.setMediaSession(mSession.getSessionToken());*/
-
             builder
                 .addAction(generateAction(android.R.drawable.ic_media_rew, "Rewind", ACTION_REWIND))
                 .addAction(generateAction(android.R.drawable.ic_media_play, "Play", ACTION_PLAY))
@@ -216,6 +218,7 @@ public class Builder {
         }
         else {
             NotificationCompat.BigTextStyle style = new NotificationCompat.BigTextStyle().bigText(options.getText());
+            
             builder
                 .setStyle(style)
                 .setLights(options.getLedColor(), 500, 500);
