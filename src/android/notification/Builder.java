@@ -38,7 +38,12 @@ import android.R;
 
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.Random;
+
+import java.lang.reflect.Field;
+import java.lang.NoSuchFieldException;
+import java.lang.IllegalAccessException;
 
 /**
  * Builder class for local notifications. Build fully configured local
