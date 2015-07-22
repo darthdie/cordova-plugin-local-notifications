@@ -150,11 +150,34 @@ public class Builder {
             .setOnlyAlertOnce(options.isAlertOnlyOnce())
             .setStyle(style);
 
-
         String type = options.getType();
 
         if(type.equals("download")) {
             builder.setProgress(100, options.getProgress(), false);
+        }
+        else if(type.equals("media")) {
+            String mediastate = options.getMediastate();
+
+            try {
+                Field f = builder.getClass().getDeclaredField("mActions");
+                f.setAccessible(true);
+                f.set(builder, new ArrayList<NotificationCompat.Action>());
+            }
+            catch(NoSuchFieldException e) {}
+            catch(IllegalAccessException e) {}
+
+            if(mediastate.equals("playing")) {
+                builder
+                    .addAction(generateAction(android.R.drawable.ic_media_rew, "Rewind", ACTION_REWIND))
+                    .addAction(generateAction(android.R.drawable.ic_media_pause, "Pause", ACTION_PAUSE))
+                    .addAction(generateAction(android.R.drawable.ic_media_ff, "Fast Foward", ACTION_FAST_FORWARD));
+            }
+            else {
+                builder
+                    .addAction(generateAction(android.R.drawable.ic_media_rew, "Rewind", ACTION_REWIND))
+                    .addAction(generateAction(android.R.drawable.ic_media_play, "Play", ACTION_PLAY))
+                    .addAction(generateAction(android.R.drawable.ic_media_ff, "Fast Foward", ACTION_FAST_FORWARD));
+            }
         }
         else {
             builder.setLights(options.getLedColor(), 500, 500);

@@ -168,6 +168,10 @@ public class Options {
         return options.optInt("progress", 0);
     }
 
+    public String getMediastate() {
+        return options.optString("mediastate", "paused");
+    }
+
     /**
      * Repeat interval (day, week, month, year, aso.)
      */

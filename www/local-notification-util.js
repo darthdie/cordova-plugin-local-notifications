@@ -34,6 +34,7 @@ exports._defaults = {
     text:  '',
     title: '',
     type: '',
+    mediastate: '',
     alertOnlyOnce: false,
     sound: 'res://platform_default',
     badge: 0,
