@@ -94,7 +94,15 @@ public class Manager {
                 .setTriggerReceiver(receiver)
                 .build();
 
-        notification.schedule();
+        String type = options.getType();
+
+        if(type.equals("download") || type.equals("media")) {
+            notification.persist();
+            notification.show();
+        }
+        else {
+            notification.schedule();
+        }
 
         return notification;
     }
@@ -127,7 +135,8 @@ public class Manager {
         if(type.equals("download") || type.equals("media")) {
             notification = Builder.update(new Options(context).parse(options), notification);
 
-            notification.schedule();
+            notification.persist();
+            notification.show();
             return notification;
         }
 

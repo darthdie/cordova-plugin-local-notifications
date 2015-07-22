@@ -134,62 +134,83 @@ public class Builder {
     }
 
     public static Notification update(Options options, Notification notification) {
-        Uri sound = options.getSoundUri();
-        NotificationCompat.BigTextStyle style;
-
-        style = new NotificationCompat.BigTextStyle()
-                .bigText(options.getText());
-
         NotificationCompat.Builder builder = notification.getBuilder();
+        Options oldOptions = notification.getOptions();
 
-        builder
-            .setDefaults(0)
-            .setContentTitle(options.getTitle())
-            .setContentText(options.getText())
-            .setNumber(options.getBadgeNumber())
-            .setTicker(options.getText())
-            .setSmallIcon(options.getSmallIcon())
-            .setLargeIcon(options.getIconBitmap())
-            .setAutoCancel(options.isAutoClear())
-            .setOngoing(options.isOngoing())
-            .setOnlyAlertOnce(options.isAlertOnlyOnce())
-            .setStyle(style);
+        if(!options.getTitle().equals(oldOptions.getTitle())) {
+            builder.setContentTitle(options.getTitle());
+        }
+
+        if(!options.getText().equals(oldOptions.getText())) {
+            builder.setContentText(options.getText());
+            builder.setTicker(options.getText());
+        }
+
+        if(options.getBadgeNumber() != oldOptions.getBadgeNumber()) {
+            builder.setNumber(options.getBadgeNumber());
+        }
+
+        if(options.getSmallIcon() != oldOptions.getSmallIcon()) {
+            builder.setSmallIcon(options.getSmallIcon());
+        }
+
+        if(!options.getIconBitmap().sameAs(oldOptions.getIconBitmap())) {
+            builder.setLargeIcon(options.getIconBitmap());
+        }
+
+        if(options.isAutoClear() != oldOptions.isAutoClear()) {
+            builder.setAutoCancel(options.isAutoClear());
+        }
+
+        if(options.isOngoing() != oldOptions.isOngoing()) {
+            builder.setOngoing(options.isOngoing());
+        }
+
+        if(options.isAlertOnlyOnce() != oldOptions.isAlertOnlyOnce()) {
+            builder.setOnlyAlertOnce(options.isAlertOnlyOnce());
+        }
+
+        if(options.getLedColor() != oldOptions.getLedColor()) {
+            builder.setLights(options.getLedColor(), 500, 500);
+        }
+
+        Uri sound = options.getSoundUri();
+        if (sound != null && !sound.equals(oldOptions.getSoundUri())) {
+            builder.setSound(sound);
+        }
 
         String type = options.getType();
 
         if(type.equals("download")) {
-            builder.setProgress(100, options.getProgress(), false);
+            if(options.getProgress() != oldOptions.getProgress()) {
+                builder.setProgress(100, options.getProgress(), false);
+            }
         }
         else if(type.equals("media")) {
             String mediastate = options.getMediastate();
 
-            try {
-                Field f = builder.getClass().getDeclaredField("mActions");
-                f.setAccessible(true);
-                f.set(builder, new ArrayList<NotificationCompat.Action>());
-            }
-            catch(NoSuchFieldException e) {}
-            catch(IllegalAccessException e) {}
+            if(!mediastate.equals(oldOptions.getMediastate())) {
+                try {
+                    Field f = builder.getClass().getDeclaredField("mActions");
+                    f.setAccessible(true);
+                    f.set(builder, new ArrayList<NotificationCompat.Action>());
+                }
+                catch(NoSuchFieldException e) {}
+                catch(IllegalAccessException e) {}
 
-            if(mediastate.equals("playing")) {
-                builder
-                    .addAction(generateAction(android.R.drawable.ic_media_rew, "Rewind", ACTION_REWIND))
-                    .addAction(generateAction(android.R.drawable.ic_media_pause, "Pause", ACTION_PAUSE))
-                    .addAction(generateAction(android.R.drawable.ic_media_ff, "Fast Foward", ACTION_FAST_FORWARD));
+                if(mediastate.equals("playing")) {
+                    builder
+                        .addAction(generateAction(notification.getContext(), options, android.R.drawable.ic_media_rew, "Rewind", ACTION_REWIND))
+                        .addAction(generateAction(notification.getContext(), options, android.R.drawable.ic_media_pause, "Pause", ACTION_PAUSE))
+                        .addAction(generateAction(notification.getContext(), options, android.R.drawable.ic_media_ff, "Fast Foward", ACTION_FAST_FORWARD));
+                }
+                else {
+                    builder
+                        .addAction(generateAction(notification.getContext(), options, android.R.drawable.ic_media_rew, "Rewind", ACTION_REWIND))
+                        .addAction(generateAction(notification.getContext(), options, android.R.drawable.ic_media_play, "Play", ACTION_PLAY))
+                        .addAction(generateAction(notification.getContext(), options, android.R.drawable.ic_media_ff, "Fast Foward", ACTION_FAST_FORWARD));
+                }
             }
-            else {
-                builder
-                    .addAction(generateAction(android.R.drawable.ic_media_rew, "Rewind", ACTION_REWIND))
-                    .addAction(generateAction(android.R.drawable.ic_media_play, "Play", ACTION_PLAY))
-                    .addAction(generateAction(android.R.drawable.ic_media_ff, "Fast Foward", ACTION_FAST_FORWARD));
-            }
-        }
-        else {
-            builder.setLights(options.getLedColor(), 500, 500);
-        }
-
-        if (sound != null) {
-            builder.setSound(sound);
         }
 
         //applyDeleteReceiver(builder);
@@ -221,6 +242,8 @@ public class Builder {
         if(type.equals("download")) {
             builder
                 .setProgress(100, options.getProgress(), false)
+                .setCategory("progress")
+                .setPriority(android.app.Notification.PRIORITY_LOW)
                 .setTicker(null);
         }
         else if(type.equals("media")) {
@@ -236,9 +259,9 @@ public class Builder {
 
             style.setMediaSession(mSession.getSessionToken());*/
             builder
-                .addAction(generateAction(android.R.drawable.ic_media_rew, "Rewind", ACTION_REWIND))
-                .addAction(generateAction(android.R.drawable.ic_media_play, "Play", ACTION_PLAY))
-                .addAction(generateAction(android.R.drawable.ic_media_ff, "Fast Foward", ACTION_FAST_FORWARD))
+                .addAction(generateAction(context, options, android.R.drawable.ic_media_rew, "Rewind", ACTION_REWIND))
+                .addAction(generateAction(context, options, android.R.drawable.ic_media_play, "Play", ACTION_PLAY))
+                .addAction(generateAction(context, options, android.R.drawable.ic_media_ff, "Fast Foward", ACTION_FAST_FORWARD))
                 .setStyle(new android.support.v7.app.NotificationCompat.MediaStyle()
                     .setShowActionsInCompactView(1))
                 .setShowWhen(false)
@@ -246,7 +269,7 @@ public class Builder {
         }
         else {
             NotificationCompat.BigTextStyle style = new NotificationCompat.BigTextStyle().bigText(options.getText());
-            
+
             builder
                 .setStyle(style)
                 .setLights(options.getLedColor(), 500, 500);
@@ -262,7 +285,7 @@ public class Builder {
         return new Notification(context, options, builder, triggerReceiver);
     }
 
-    private NotificationCompat.Action generateAction( int icon, String title, String intentAction ) {
+    private static NotificationCompat.Action generateAction(Context context, Options options, int icon, String title, String intentAction ) {
         Intent intent = new Intent(context, MediaControlReceiver.class);
         intent.setAction(intentAction);
         intent.putExtra(Options.EXTRA, options.toString());

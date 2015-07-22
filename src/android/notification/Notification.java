@@ -296,7 +296,7 @@ public class Notification {
      * Preferences. This will allow the application to restore the notification
      * upon device reboot, app restart, retrieve notifications, aso.
      */
-    private void persist () {
+    public void persist () {
         SharedPreferences.Editor editor = getPrefs().edit();
 
         editor.putString(options.getIdStr(), options.toString());
