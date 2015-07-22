@@ -27,7 +27,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.support.v4.app.NotificationCompat;
+import android.support.v7.app.NotificationCompat;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
 import android.support.v4.media.session.MediaSessionCompat.Callback;
@@ -44,6 +44,8 @@ import java.util.Random;
 import java.lang.reflect.Field;
 import java.lang.NoSuchFieldException;
 import java.lang.IllegalAccessException;
+
+import android.util.Log;
 
 /**
  * Builder class for local notifications. Build fully configured local
@@ -135,81 +137,63 @@ public class Builder {
 
     public static Notification update(Options options, Notification notification) {
         NotificationCompat.Builder builder = notification.getBuilder();
-        Options oldOptions = notification.getOptions();
 
-        if(!options.getTitle().equals(oldOptions.getTitle())) {
-            builder.setContentTitle(options.getTitle());
-        }
+        builder.setContentTitle(options.getTitle());
 
-        if(!options.getText().equals(oldOptions.getText())) {
-            builder.setContentText(options.getText());
-            builder.setTicker(options.getText());
-        }
+        builder.setContentText(options.getText());
+        builder.setTicker(options.getText());
 
-        if(options.getBadgeNumber() != oldOptions.getBadgeNumber()) {
-            builder.setNumber(options.getBadgeNumber());
-        }
+        builder.setNumber(options.getBadgeNumber());
 
-        if(options.getSmallIcon() != oldOptions.getSmallIcon()) {
-            builder.setSmallIcon(options.getSmallIcon());
-        }
+        builder.setSmallIcon(options.getSmallIcon());
 
-        if(!options.getIconBitmap().sameAs(oldOptions.getIconBitmap())) {
-            builder.setLargeIcon(options.getIconBitmap());
-        }
+        builder.setLargeIcon(options.getIconBitmap());
 
-        if(options.isAutoClear() != oldOptions.isAutoClear()) {
-            builder.setAutoCancel(options.isAutoClear());
-        }
+        builder.setAutoCancel(options.isAutoClear());
 
-        if(options.isOngoing() != oldOptions.isOngoing()) {
-            builder.setOngoing(options.isOngoing());
-        }
+        builder.setOngoing(options.isOngoing());
 
-        if(options.isAlertOnlyOnce() != oldOptions.isAlertOnlyOnce()) {
-            builder.setOnlyAlertOnce(options.isAlertOnlyOnce());
-        }
+        builder.setOnlyAlertOnce(options.isAlertOnlyOnce());
 
-        if(options.getLedColor() != oldOptions.getLedColor()) {
-            builder.setLights(options.getLedColor(), 500, 500);
-        }
+        builder.setLights(options.getLedColor(), 500, 500);
 
         Uri sound = options.getSoundUri();
-        if (sound != null && !sound.equals(oldOptions.getSoundUri())) {
+        if (sound != null) {
             builder.setSound(sound);
         }
 
         String type = options.getType();
 
         if(type.equals("download")) {
-            if(options.getProgress() != oldOptions.getProgress()) {
-                builder.setProgress(100, options.getProgress(), false);
-            }
+            builder.setProgress(100, options.getProgress(), false);
         }
         else if(type.equals("media")) {
             String mediastate = options.getMediastate();
 
-            if(!mediastate.equals(oldOptions.getMediastate())) {
-                try {
-                    Field f = builder.getClass().getDeclaredField("mActions");
-                    f.setAccessible(true);
-                    f.set(builder, new ArrayList<NotificationCompat.Action>());
-                }
-                catch(NoSuchFieldException e) {}
-                catch(IllegalAccessException e) {}
+            try {
+                Field f = builder.getClass().getSuperclass().getDeclaredField("mActions");
 
-                if(mediastate.equals("playing")) {
-                    builder
-                        .addAction(generateAction(notification.getContext(), options, android.R.drawable.ic_media_rew, "Rewind", ACTION_REWIND))
-                        .addAction(generateAction(notification.getContext(), options, android.R.drawable.ic_media_pause, "Pause", ACTION_PAUSE))
-                        .addAction(generateAction(notification.getContext(), options, android.R.drawable.ic_media_ff, "Fast Foward", ACTION_FAST_FORWARD));
-                }
-                else {
-                    builder
-                        .addAction(generateAction(notification.getContext(), options, android.R.drawable.ic_media_rew, "Rewind", ACTION_REWIND))
-                        .addAction(generateAction(notification.getContext(), options, android.R.drawable.ic_media_play, "Play", ACTION_PLAY))
-                        .addAction(generateAction(notification.getContext(), options, android.R.drawable.ic_media_ff, "Fast Foward", ACTION_FAST_FORWARD));
-                }
+                f.setAccessible(true);
+                f.set(builder, new ArrayList<NotificationCompat.Action>());
+            }
+            catch(NoSuchFieldException e) {
+                Log.d("Satchel", "error retrieving actions (NoSuchField)");
+            }
+            catch(IllegalAccessException e) {
+                Log.d("Satchel", "error retrieving actions (IllegalAccess)");
+            }
+
+            if(mediastate.equals("playing")) {
+                builder
+                    .addAction(generateAction(notification.getContext(), options, android.R.drawable.ic_media_rew, "Rewind", ACTION_REWIND))
+                    .addAction(generateAction(notification.getContext(), options, android.R.drawable.ic_media_pause, "Pause", ACTION_PAUSE))
+                    .addAction(generateAction(notification.getContext(), options, android.R.drawable.ic_media_ff, "Fast Foward", ACTION_FAST_FORWARD));
+            }
+            else {
+                builder
+                    .addAction(generateAction(notification.getContext(), options, android.R.drawable.ic_media_rew, "Rewind", ACTION_REWIND))
+                    .addAction(generateAction(notification.getContext(), options, android.R.drawable.ic_media_play, "Play", ACTION_PLAY))
+                    .addAction(generateAction(notification.getContext(), options, android.R.drawable.ic_media_ff, "Fast Foward", ACTION_FAST_FORWARD));
             }
         }
 
@@ -225,17 +209,18 @@ public class Builder {
     public Notification build() {
         Uri sound = options.getSoundUri();
 
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
-                .setDefaults(0)
-                .setContentTitle(options.getTitle())
-                .setContentText(options.getText())
-                .setNumber(options.getBadgeNumber())
-                .setTicker(options.getText())
-                .setSmallIcon(options.getSmallIcon())
-                .setLargeIcon(options.getIconBitmap())
-                .setAutoCancel(options.isAutoClear())
-                .setOngoing(options.isOngoing())
-                .setOnlyAlertOnce(options.isAlertOnlyOnce());
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
+        builder
+            .setDefaults(0)
+            .setContentTitle(options.getTitle())
+            .setContentText(options.getText())
+            .setNumber(options.getBadgeNumber())
+            .setTicker(options.getText())
+            .setSmallIcon(options.getSmallIcon())
+            .setLargeIcon(options.getIconBitmap())
+            .setAutoCancel(options.isAutoClear())
+            .setOngoing(options.isOngoing())
+            .setOnlyAlertOnce(options.isAlertOnlyOnce());
 
         String type = options.getType();
 
@@ -248,22 +233,24 @@ public class Builder {
         }
         else if(type.equals("media")) {
             /*PlaybackStateCompat.Builder stateBuilder = new PlaybackStateCompat.Builder();
-            stateBuilder.setActions(PlaybackStateCompat.ACTION_PLAY);
-            stateBuilder.setState(PlaybackStateCompat.STATE_STOPPED, PlaybackStateCompat.PLAYBACK_POSITION_UNKNOWN, 0);
+            stateBuilder.setActions(PlaybackStateCompat.ACTION_PLAY | PlaybackStateCompat.ACTION_PAUSE);
+            stateBuilder.setState(PlaybackStateCompat.STATE_PAUSED, PlaybackStateCompat.PLAYBACK_POSITION_UNKNOWN, 0);
 
             mSession = new MediaSessionCompat(context, "test");
             mSession.setPlaybackState(stateBuilder.build());
             mSession.setFlags(MediaSessionCompat.FLAG_HANDLES_MEDIA_BUTTONS | MediaSessionCompat.FLAG_HANDLES_TRANSPORT_CONTROLS);
 
-            mSession.setActive(true);
+            mSession.setActive(true);*/
 
-            style.setMediaSession(mSession.getSessionToken());*/
+            NotificationCompat.MediaStyle style = new NotificationCompat.MediaStyle();
+            style.setShowActionsInCompactView(1);
+            //style.setMediaSession(mSession.getSessionToken());
+
             builder
                 .addAction(generateAction(context, options, android.R.drawable.ic_media_rew, "Rewind", ACTION_REWIND))
                 .addAction(generateAction(context, options, android.R.drawable.ic_media_play, "Play", ACTION_PLAY))
                 .addAction(generateAction(context, options, android.R.drawable.ic_media_ff, "Fast Foward", ACTION_FAST_FORWARD))
-                .setStyle(new android.support.v7.app.NotificationCompat.MediaStyle()
-                    .setShowActionsInCompactView(1))
+                .setStyle(style)
                 .setShowWhen(false)
                 .setVisibility(NotificationCompat.VISIBILITY_PUBLIC);
         }

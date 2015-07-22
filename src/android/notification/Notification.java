@@ -31,7 +31,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
-import android.support.v4.app.NotificationCompat;
+import android.support.v7.app.NotificationCompat;
 
 import org.json.JSONException;
 import org.json.JSONObject;
