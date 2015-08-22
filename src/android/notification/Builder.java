@@ -155,8 +155,6 @@ public class Builder {
 
         builder.setOnlyAlertOnce(options.isAlertOnlyOnce());
 
-        builder.setLights(options.getLedColor(), 500, 500);
-
         Uri sound = options.getSoundUri();
         if (sound != null) {
             builder.setSound(sound);
@@ -195,6 +193,9 @@ public class Builder {
                     .addAction(generateAction(notification.getContext(), options, android.R.drawable.ic_media_play, "Play", ACTION_PLAY))
                     .addAction(generateAction(notification.getContext(), options, android.R.drawable.ic_media_ff, "Fast Foward", ACTION_FAST_FORWARD));
             }
+        }
+        else {
+            builder.setLights(options.getLedColor(), 500, 500);
         }
 
         //applyDeleteReceiver(builder);
