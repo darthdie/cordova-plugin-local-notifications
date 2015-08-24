@@ -141,7 +141,6 @@ public class Builder {
         builder.setContentTitle(options.getTitle());
 
         builder.setContentText(options.getText());
-        builder.setTicker(options.getText());
 
         builder.setNumber(options.getBadgeNumber());
 
@@ -195,6 +194,7 @@ public class Builder {
             }
         }
         else {
+            builder.setTicker(options.getText());
             builder.setLights(options.getLedColor(), 500, 500);
         }
 
@@ -228,6 +228,7 @@ public class Builder {
         if(type.equals("download")) {
             builder
                 .setProgress(100, options.getProgress(), false)
+                .setVibrate(new long[] { 0, 0 })
                 .setCategory("progress")
                 .setPriority(android.app.Notification.PRIORITY_LOW)
                 .setTicker(null);
@@ -248,6 +249,7 @@ public class Builder {
             //style.setMediaSession(mSession.getSessionToken());
 
             builder
+                .setVibrate(new long[] { 0, 0})
                 .addAction(generateAction(context, options, android.R.drawable.ic_media_rew, "Rewind", ACTION_REWIND))
                 .addAction(generateAction(context, options, android.R.drawable.ic_media_play, "Play", ACTION_PLAY))
                 .addAction(generateAction(context, options, android.R.drawable.ic_media_ff, "Fast Foward", ACTION_FAST_FORWARD))

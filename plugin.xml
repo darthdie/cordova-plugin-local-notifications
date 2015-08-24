@@ -114,6 +114,8 @@
                 <intent-filter>
                     <action android:name="de.appplant.action_play" />
                     <action android:name="de.appplant.action_pause" />
+                    <action android:name="de.appplant.action_rewind" />
+                    <action android:name="de.appplant.action_fast_forward" />
                 </intent-filter>
             </receiver>
 
