@@ -56,7 +56,7 @@ public class Builder {
     public static final String ACTION_PLAY = "de.appplant.action_play";
     public static final String ACTION_PAUSE = "de.appplant.action_pause";
     public static final String ACTION_REWIND = "de.appplant.action_rewind";
-    public static final String ACTION_FAST_FORWARD = "de.appplant.action_fast_foward";
+    public static final String ACTION_FAST_FORWARD = "de.appplant.action_fast_forward";
     public static final String ACTION_NEXT = "de.appplant.action_next";
     public static final String ACTION_PREVIOUS = "de.appplant.action_previous";
     public static final String ACTION_STOP = "de.appplant.action_stop";
@@ -180,17 +180,21 @@ public class Builder {
                 Log.d("Satchel", "error retrieving actions (IllegalAccess)");
             }
 
+            NotificationCompat.MediaStyle style = new NotificationCompat.MediaStyle();
+            style.setShowActionsInCompactView(1);
+            builder.setStyle(style);
+
             if(mediastate.equals("playing")) {
                 builder
-                    .addAction(generateAction(notification.getContext(), options, options.getMediaBackIcon(), "Rewind", ACTION_REWIND))
-                    .addAction(generateAction(notification.getContext(), options, android.R.drawable.ic_media_pause, "Pause", ACTION_PAUSE))
-                    .addAction(generateAction(notification.getContext(), options, options.getMediaForwardIcon(), "Fast Foward", ACTION_FAST_FORWARD));
+                    .addAction(generateAction(notification.getContext(), options, options.getMediaBackIcon(), "Back", ACTION_REWIND))
+                    .addAction(generateAction(notification.getContext(), options, options.getMediaPauseIcon(), "Pause", ACTION_PAUSE))
+                    .addAction(generateAction(notification.getContext(), options, options.getMediaForwardIcon(), "Forward", ACTION_FAST_FORWARD));
             }
             else {
                 builder
-                    .addAction(generateAction(notification.getContext(), options, options.getMediaBackIcon(), "Rewind", ACTION_REWIND))
-                    .addAction(generateAction(notification.getContext(), options, android.R.drawable.ic_media_play, "Play", ACTION_PLAY))
-                    .addAction(generateAction(notification.getContext(), options, options.getMediaForwardIcon(), "Fast Foward", ACTION_FAST_FORWARD));
+                    .addAction(generateAction(notification.getContext(), options, options.getMediaBackIcon(), "Back", ACTION_REWIND))
+                    .addAction(generateAction(notification.getContext(), options, options.getMediaPlayIcon(), "Play", ACTION_PLAY))
+                    .addAction(generateAction(notification.getContext(), options, options.getMediaForwardIcon(), "Forward", ACTION_FAST_FORWARD));
             }
         }
         else {
@@ -230,7 +234,6 @@ public class Builder {
                 .setProgress(100, options.getProgress(), false)
                 .setVibrate(new long[] { 0, 0 })
                 .setCategory("progress")
-                .setPriority(android.app.Notification.PRIORITY_LOW)
                 .setTicker(null);
         }
         else if(type.equals("media")) {
@@ -250,9 +253,9 @@ public class Builder {
 
             builder
                 .setVibrate(new long[] { 0, 0})
-                .addAction(generateAction(context, options, options.getMediaBackIcon(), "Rewind", ACTION_REWIND))
-                .addAction(generateAction(context, options, android.R.drawable.ic_media_play, "Play", ACTION_PLAY))
-                .addAction(generateAction(context, options, options.getMediaForwardIcon(), "Fast Foward", ACTION_FAST_FORWARD))
+                .addAction(generateAction(context, options, options.getMediaBackIcon(), "Back", ACTION_REWIND))
+                .addAction(generateAction(context, options, options.getMediaPlayIcon(), "Play", ACTION_PLAY))
+                .addAction(generateAction(context, options, options.getMediaForwardIcon(), "Forward", ACTION_FAST_FORWARD))
                 .setStyle(style)
                 .setShowWhen(false)
                 .setVisibility(NotificationCompat.VISIBILITY_PUBLIC);

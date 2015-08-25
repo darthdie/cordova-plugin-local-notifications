@@ -309,8 +309,28 @@ public class Options {
         return resId;
     }
 
+    public int getMediaPlayIcon() {
+        int resId = assets.getResIdForDrawable("mediaplay");
+
+        if (resId == 0) {
+            resId = android.R.drawable.ic_media_play;
+        }
+
+        return resId;
+    }
+
+    public int getMediaPauseIcon() {
+        int resId = assets.getResIdForDrawable("mediapause");
+
+        if (resId == 0) {
+            resId = android.R.drawable.ic_media_pause;
+        }
+
+        return resId;
+    }
+
     public int getMediaBackIcon() {
-        int resId = assets.getResIdForDrawable("mediaBack");
+        int resId = assets.getResIdForDrawable("mediaback");
 
         if (resId == 0) {
             resId = android.R.drawable.ic_media_rew;
@@ -320,7 +340,7 @@ public class Options {
     }
 
     public int getMediaForwardIcon() {
-        int resId = assets.getResIdForDrawable("mediaForward");
+        int resId = assets.getResIdForDrawable("mediaforward");
 
         if (resId == 0) {
             resId = android.R.drawable.ic_media_ff;

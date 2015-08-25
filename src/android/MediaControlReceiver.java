@@ -17,7 +17,7 @@ public class MediaControlReceiver extends BroadcastReceiver {
     public static final String ACTION_PLAY = "de.appplant.action_play";
     public static final String ACTION_PAUSE = "de.appplant.action_pause";
     public static final String ACTION_REWIND = "de.appplant.action_rewind";
-    public static final String ACTION_FAST_FORWARD = "de.appplant.action_fast_foward";
+    public static final String ACTION_FAST_FORWARD = "de.appplant.action_fast_forward";
     public static final String ACTION_NEXT = "de.appplant.action_next";
     public static final String ACTION_PREVIOUS = "de.appplant.action_previous";
     public static final String ACTION_STOP = "de.appplant.action_stop";
