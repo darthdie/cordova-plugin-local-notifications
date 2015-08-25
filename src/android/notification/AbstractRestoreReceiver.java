@@ -48,7 +48,7 @@ abstract public class AbstractRestoreReceiver extends BroadcastReceiver {
      */
     @Override
     public void onReceive (Context context, Intent intent) {
-        Manager notificationMgr =
+        /*Manager notificationMgr =
                 Manager.getInstance(context);
 
         List<JSONObject> options =
@@ -61,7 +61,7 @@ abstract public class AbstractRestoreReceiver extends BroadcastReceiver {
                     buildNotification(builder);
 
             onRestore(notification);
-        }
+        }*/
     }
 
     /**

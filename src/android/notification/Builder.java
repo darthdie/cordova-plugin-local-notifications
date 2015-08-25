@@ -182,15 +182,15 @@ public class Builder {
 
             if(mediastate.equals("playing")) {
                 builder
-                    .addAction(generateAction(notification.getContext(), options, android.R.drawable.ic_media_rew, "Rewind", ACTION_REWIND))
+                    .addAction(generateAction(notification.getContext(), options, options.getMediaBackIcon(), "Rewind", ACTION_REWIND))
                     .addAction(generateAction(notification.getContext(), options, android.R.drawable.ic_media_pause, "Pause", ACTION_PAUSE))
-                    .addAction(generateAction(notification.getContext(), options, android.R.drawable.ic_media_ff, "Fast Foward", ACTION_FAST_FORWARD));
+                    .addAction(generateAction(notification.getContext(), options, options.getMediaForwardIcon(), "Fast Foward", ACTION_FAST_FORWARD));
             }
             else {
                 builder
-                    .addAction(generateAction(notification.getContext(), options, android.R.drawable.ic_media_rew, "Rewind", ACTION_REWIND))
+                    .addAction(generateAction(notification.getContext(), options, options.getMediaBackIcon(), "Rewind", ACTION_REWIND))
                     .addAction(generateAction(notification.getContext(), options, android.R.drawable.ic_media_play, "Play", ACTION_PLAY))
-                    .addAction(generateAction(notification.getContext(), options, android.R.drawable.ic_media_ff, "Fast Foward", ACTION_FAST_FORWARD));
+                    .addAction(generateAction(notification.getContext(), options, options.getMediaForwardIcon(), "Fast Foward", ACTION_FAST_FORWARD));
             }
         }
         else {
@@ -250,9 +250,9 @@ public class Builder {
 
             builder
                 .setVibrate(new long[] { 0, 0})
-                .addAction(generateAction(context, options, android.R.drawable.ic_media_rew, "Rewind", ACTION_REWIND))
+                .addAction(generateAction(context, options, options.getMediaBackIcon(), "Rewind", ACTION_REWIND))
                 .addAction(generateAction(context, options, android.R.drawable.ic_media_play, "Play", ACTION_PLAY))
-                .addAction(generateAction(context, options, android.R.drawable.ic_media_ff, "Fast Foward", ACTION_FAST_FORWARD))
+                .addAction(generateAction(context, options, options.getMediaForwardIcon(), "Fast Foward", ACTION_FAST_FORWARD))
                 .setStyle(style)
                 .setShowWhen(false)
                 .setVisibility(NotificationCompat.VISIBILITY_PUBLIC);

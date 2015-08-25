@@ -309,6 +309,26 @@ public class Options {
         return resId;
     }
 
+    public int getMediaBackIcon() {
+        int resId = assets.getResIdForDrawable("mediaBack");
+
+        if (resId == 0) {
+            resId = android.R.drawable.ic_media_rew;
+        }
+
+        return resId;
+    }
+
+    public int getMediaForwardIcon() {
+        int resId = assets.getResIdForDrawable("mediaForward");
+
+        if (resId == 0) {
+            resId = android.R.drawable.ic_media_ff;
+        }
+
+        return resId;
+    }
+
     /**
      * JSON object as string.
      */
