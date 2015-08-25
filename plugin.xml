@@ -154,10 +154,6 @@
             target-dir="src/de/appplant/cordova/plugin/localnotification" />
 
         <source-file
-            src="src/android/RestoreReceiver.java"
-            target-dir="src/de/appplant/cordova/plugin/localnotification" />
-
-        <source-file
             src="src/android/MediaControlReceiver.java"
             target-dir="src/de/appplant/cordova/plugin/localnotification" />
 
@@ -167,10 +163,6 @@
 
         <source-file
             src="src/android/notification/AbstractClickActivity.java"
-            target-dir="src/de/appplant/cordova/plugin/notification" />
-
-        <source-file
-            src="src/android/notification/AbstractRestoreReceiver.java"
             target-dir="src/de/appplant/cordova/plugin/notification" />
 
         <source-file
