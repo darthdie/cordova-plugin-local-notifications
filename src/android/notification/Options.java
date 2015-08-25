@@ -254,7 +254,7 @@ public class Options {
      *      The notification color for LED
      */
     public int getLedColor() {
-        String hex = options.optString("led", "000000");
+        String hex = options.optString("led", "CD6C00");
         int aRGB   = Integer.parseInt(hex,16);
 
         aRGB += 0xFF000000;

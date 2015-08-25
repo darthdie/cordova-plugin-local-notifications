@@ -199,7 +199,7 @@ public class Builder {
         }
         else {
             builder.setTicker(options.getText());
-            builder.setLights(options.getLedColor(), 500, 500);
+            builder.setLights(options.getLedColor(), 1000, 5000);
         }
 
         //applyDeleteReceiver(builder);
@@ -265,7 +265,7 @@ public class Builder {
 
             builder
                 .setStyle(style)
-                .setLights(options.getLedColor(), 500, 500);
+                .setLights(options.getLedColor(), 1000, 5000);
         }
 
         if (sound != null) {

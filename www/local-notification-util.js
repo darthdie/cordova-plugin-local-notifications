@@ -34,6 +34,7 @@ exports._defaults = {
     text:  '',
     title: '',
     type: '',
+    led: 'CD6C00',
     mediastate: '',
     alertOnlyOnce: false,
     sound: 'res://platform_default',
