@@ -181,7 +181,7 @@ public class Builder {
             }
 
             NotificationCompat.MediaStyle style = new NotificationCompat.MediaStyle();
-            style.setShowActionsInCompactView(1);
+            style.setShowActionsInCompactView(0, 1, 2);
             builder.setStyle(style);
 
             if(mediastate.equals("playing")) {
