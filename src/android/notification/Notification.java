@@ -238,12 +238,17 @@ public class Notification {
     private void showNotification () {
         int id = getOptions().getId();
 
-        if (Build.VERSION.SDK_INT <= 15) {
-            // Notification for HoneyComb to ICS
-            getNotMgr().notify(id, builder.getNotification());
-        } else {
-            // Notification for Jellybean and above
-            getNotMgr().notify(id, builder.build());
+        try {
+            if (Build.VERSION.SDK_INT <= 15) {
+                // Notification for HoneyComb to ICS
+                getNotMgr().notify(id, builder.getNotification());
+            } else {
+                // Notification for Jellybean and above
+                getNotMgr().notify(id, builder.build());
+            }
+        }
+        catch(java.lang.Exception e) {
+            e.printStackTrace();
         }
     }
 

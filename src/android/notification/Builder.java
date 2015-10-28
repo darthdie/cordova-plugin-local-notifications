@@ -248,7 +248,7 @@ public class Builder {
             mSession.setActive(true);*/
 
             NotificationCompat.MediaStyle style = new NotificationCompat.MediaStyle();
-            style.setShowActionsInCompactView(1);
+            style.setShowActionsInCompactView(0, 1, 2);
             //style.setMediaSession(mSession.getSessionToken());
 
             builder
