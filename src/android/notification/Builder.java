@@ -221,8 +221,6 @@ public class Builder {
             .setContentText(options.getText())
             .setNumber(options.getBadgeNumber())
             .setTicker(options.getText())
-            .setSmallIcon(options.getSmallIcon())
-            .setLargeIcon(options.getIconBitmap())
             .setAutoCancel(options.isAutoClear())
             .setOngoing(options.isOngoing())
             .setOnlyAlertOnce(options.isAlertOnlyOnce());
@@ -272,6 +270,7 @@ public class Builder {
             builder.setSound(sound);
         }
 
+        int smallIcon = options.getSmallIcon();
         if (smallIcon == 0) {
             builder.setSmallIcon(options.getIcon());
         } else {
