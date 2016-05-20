@@ -154,12 +154,12 @@ public class Builder {
 
         builder.setOnlyAlertOnce(options.isAlertOnlyOnce());
 
+        String type = options.getType();
+
         Uri sound = options.getSoundUri();
-        if (sound != null) {
+        if (!type.equals("media") && sound != null) {
             builder.setSound(sound);
         }
-
-        String type = options.getType();
 
         if(type.equals("download")) {
             builder.setProgress(100, options.getProgress(), false);
@@ -266,7 +266,7 @@ public class Builder {
                 .setLights(options.getLedColor(), 1000, 5000);
         }
 
-        if (sound != null) {
+        if (!type.equals("media") && sound != null) {
             builder.setSound(sound);
         }
 
